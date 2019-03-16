@@ -1,5 +1,5 @@
 float g = 6.67408*pow(10,-11);
-float s = 0.000000002;
+float s = 0.000000001;
 boolean lower = false;
 float ts = 0;
 float[] faks = {7, 10};
@@ -10,10 +10,12 @@ PlanetSystem sys2;
 Hist h2;
 MassPoint[] planets;
 float t = 0;
+int pSize = 600;
+boolean running = false;
 
 void setup(){
-  size(1000,1000);
-  frameRate(1200);
+  size(pSize,pSize);
+  frameRate(60);
   planets = new MassPoint[3];
   planets[0] = new MassPoint(new Vector(0,0,384400000), new Vector(0,29780+1023,0), 7.349*pow(10,22), 0);
   planets[1] = new MassPoint(o,new Vector(0,29780,0),5.9723*pow(10,24),1);
@@ -22,31 +24,46 @@ void setup(){
   //planets[1] = new MassPoint(new Vector(0,0,-1), new Vector(0,1,0), faks[0]*pow(10, faks[1]), 2);
   //planets[2] = new MassPoint(new Vector(0,10,0), new Vector(0,0,0.8), 0.1*faks[0]*pow(10, faks[1]), 2);
   sys = new PlanetSystem(planets, 0);
-  h1 = new Hist(sys.mult(1));
+  //h1 = new Hist(sys.mult(1));
   sys2 = new PlanetSystem(planets, 1);
-  h2 = new Hist(sys2.mult(1));
+  //h2 = new Hist(sys2.mult(1));
+}
+
+void keyPressed()
+{
+  if(key == 't'|| key =='T')
+  {
+    running = !running;
+  }
+  if(key == 'r'|| key =='R')
+  {
+    setup();
+  }
 }
 
 void draw(){
- for(int i = 0; i<1; i++)
- { //<>//
-   sys2.step(60*60*12);
-   sys.step(60*60*12);
- }
- t += 60*60*24;
- //println(t/(60*60*24));
- background(0);
- Vector avg = sys.avg();
- stroke(255,0,0);
- fill(255,0,0);
- sys.show();
- h1.add(sys.mult(1));
- h1.draw(avg.data[1], avg.data[2]);
- stroke(0,0,255);
- fill(0,0,255);
- sys2.show();
- h2.add(sys2.mult(1));
- h2.draw(avg.data[1], avg.data[2]);
+  if(running)
+  {
+    for(int i = 0; i<1; i++)
+    { //<>//
+      sys2.step(60*60*12);
+      sys.step(60*60*12);
+    }
+    t += 60*60*24;
+    //println(t/(60*60*24));
+    background(0);
+    Vector avg = sys.calcAvg();
+    stroke(255,0,0);
+    fill(255,0,0);
+    sys.show();
+    //h1.add(sys.mult(1));
+    //h1.draw(avg.data[1], avg.data[2]);
+    stroke(0,0,255);
+    fill(0,0,255);
+    sys2.show();
+    //h2.add(sys2.mult(1));
+    //h2.draw(avg.data[1], avg.data[2]);
+  }
 }
 
 class Hist {
@@ -75,7 +92,7 @@ class Hist {
       {
         Vector pos = p.bodys[i].pos;
         Vector pos2 = next.p.bodys[i].pos;
-        line((float)(pos.data[1]-x)*s+500,(float)(pos.data[2]-y)*s+500,(float)(pos2.data[1]-x)*s+500,(float)(pos2.data[2]-y)*s+500);
+        line((float)(pos.data[1]-x)*s+(pSize/2),(float)(pos.data[2]-y)*s+(pSize/2),(float)(pos2.data[1]-x)*s+(pSize/2),(float)(pos2.data[2]-y)*s+(pSize/2));
       }
       next.draw(x,y);
     }
@@ -136,7 +153,7 @@ class PlanetSystem {
     return new PlanetSystem(mps, mode);
   }
   
-  Vector avg() {
+  Vector calcAvg() {
     Vector avg = new Vector(0,0,0);
     float massSum = 0;
     for(int i = 0; i < bodys.length; i++)
@@ -153,7 +170,7 @@ class PlanetSystem {
   }
   
   void show() {
-    Vector avg = avg();
+    Vector avg = calcAvg();
     //avg.prnt();
     for(MassPoint mp : bodys)
     {
@@ -177,7 +194,7 @@ class PlanetSystem {
     MassPoint[] newPS = new MassPoint[bodys.length];
     for (int i = 0; i<newPS.length; i++)
     {
-      newPS[i] = bodys[i].g(bodys);
+      newPS[i] = bodys[i].gp(bodys);
     }
     
     return new PlanetSystem(newPS, mode);
@@ -202,7 +219,8 @@ class MassPoint {
   }
   
   void show(float xo, float yo) {
-    circle((pos.data[1]-xo)*s+500,(pos.data[2]-yo)*s+500,15);
+    //circle((pos.data[1]-xo)*s+(pSize/2),(pos.data[2]-yo)*s+(pSize/2),15);
+    ellipse((pos.data[1]-xo)*s+(pSize/2), (pos.data[2]-yo)*s+(pSize/2), 15, 15);
     
   }
   
@@ -229,7 +247,7 @@ class MassPoint {
     return new MassPoint(this.pos.mult(timestep), this.vel.mult(timestep), this.mass, this.id);
   }
   
-  MassPoint g(MassPoint[] mps)
+  MassPoint gp(MassPoint[] mps)
   {
     return new MassPoint(this.vel,this.getAccs(mps), this.mass, this.id);
   }
@@ -240,10 +258,6 @@ class Vector {
   public Vector(float[] v)
   {
     data = v;
-  }
-  public Vector(int l)
-  {
-    data = new float[l];
   }
   public Vector(float x, float y, float z)
   {
@@ -265,10 +279,10 @@ class Vector {
   
   Vector mult(float k)
   {
-    float[] res = new float[data.length];
-    for(int i = 0; i< data.length; i++)
+    float[] res = new float[this.data.length];
+    for(int i = 0; i< this.data.length; i++)
     {
-      res[i] = data[i]*k;
+      res[i] = this.data[i]*k;
     }
     return new Vector(res);
   }
