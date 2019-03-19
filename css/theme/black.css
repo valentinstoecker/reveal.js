@@ -55,7 +55,7 @@ body {
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 2.5em; }
+  font-size: 2.3em; }
 
 .reveal h2 {
   font-size: 1.6em; }
@@ -101,7 +101,7 @@ body {
   list-style-type: decimal; }
 
 .reveal ul {
-  list-style-type: disc; }
+  list-style-type: square; }
 
 .reveal ul ul {
   list-style-type: square; }

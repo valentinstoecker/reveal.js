@@ -29,6 +29,9 @@
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
 		<script src="src/processing.min.js"></script>
+		<script type="text/javascript" async
+  			src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+		</script>
 
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
@@ -41,25 +44,134 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Reveal.js</h1>
-					<h3>The HTML Presentation Framework</h3>
+				<section data-background="https://66.media.tumblr.com/b83650acb8d0bd660489f17f58bf89e3/tumblr_n2j8igCYeZ1s4fz4bo1_500.gif">
+					<h2>Stabile Planetenorbits bei Mehrfachsternensystemen</h2>
+					<hr/>
+					<p>Inwiefern können Simulationen bei der Untersuchung dieses komplexen Sachverhaltes helfen?</p>
 					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> and <a href="https://github.com/hakimel/reveal.js/graphs/contributors">contributors</a></small>
+						<small>Ein Vortrag von Valentin Stöcker</small>
 					</p>
 				</section>
 
 				<section>
+					<h2>Gliederung</h2>
+					<ol>
+						<li class="fragment">Einführung</li>
+						<li class="fragment">Simulation<br/><small>
+						<ol><li class="fragment">Ansatz</li>
+							<li class="fragment">Euler-Verfahren</li>
+							<li class="fragment">Fehlerabschätzung</li>
+							<li class="fragment">Runge-Kutta-Verfahren</li>
+							<li class="fragment">weitere Verbesserungen</li></ol></small></li>
+						<li class="fragment">Fazit</li>
+					</ol>
+				</section>
+
+				<section>
 					<section>
-						<h2>Hello There</h2>
-						<p>
-							reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
-						</p>
+						<h1>Einführung</h1>
+					</section>
+					<section>
+						<h2>Einführung</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Simulation</h1>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Ansatz</h1>
+					</section>
+					<section>
+						<h2>Ansatz</h2>
+						<ul>
+							<li>Kräfteansatz</li>
+							<li>numerisches lösen von Differentialgleichungen</li>
+							<li><math xmlns="http://www.w3.org/1998/Math/MathML">
+								<mi>a</mi><msup><mi>x</mi><mn>2</mn></msup>
+								<mo>+</mo> <mi>b</mi><mi>x</mi>
+								<mo>+</mo> <mi>c</mi> <mo>=</mo> <mn>0</mn>
+							</math></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Euler-Verfahren</h1>
+					</section>
+					<section>
+						<h2>Euler-Verfahren</h2>
+						<ul>
+							<li></li>
+						</ul>
 					</section>
 					<section id="s1">
-							<canvas data-processing-sources="src/Scripts/sketch_5__Pk/sketch_5__Pk.pde"></canvas>
+						<h2>Euler-Verfahren</h2>
+						<div style="display: flex; align-content: center; justify-content: center">
+							<div>
+								<canvas data-processing-sources="src/Scripts/euler.pde"></canvas>
+							</div>
+							<div style="width: 25%">
+								<h6>Legende</h6>
+								<small>
+									<ul>
+										<li style="color: #0077ff">Euler mit h = 3h</li>
+										<li style="color: red ">Euler mit h =  12h</li>
+									</ul>
+								</small>
+							</div>
+						</div>
 					</section>
+					<section>
+						<h2>Euler-Verfahren</h2>
+						<ul>
+							<li>relativ ungenau, da nicht symmetrisch</li>
+							<li>einfach zu programmieren und zu berechnen</li>
+							<li>hat Konsistenzordnung von 1</li>
+						</ul>
+					</section>
+				</section>
 
+				<section>
+					<section>
+						<h1>Fehlerabschätzung</h1>
+					</section>
+					<section>
+						<h2>Fehlerabschätzung</h2>
+						<ul>
+							<li>basiert auf Energieerhaltungssatz</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h1>Runge-Kutta-Verfahren</h1>
+					</section>
+					<section>
+						<h2>Runge-Kutta-Verfahren</h2>
+					</section>
+					<section>
+						<h2>Runge-Kutta-Verfahren</h2>
+						<div style="display: flex; align-content: center; justify-content: center">
+								<div>
+									<canvas data-processing-sources="src/Scripts/runge-kutta.pde"></canvas>
+								</div>
+								<div style="width: 33%">
+									<h6>Legende</h6>
+									<small>
+										<ul>
+											<li style="color: #0077ff">Runge-Kutta mit h = 12h</li>
+											<li style="color: red ">Euler mit h = 12h</li>
+										</ul>
+									</small>
+								</div>
+							</div>
+					</section>
 				</section>
 
 				<!-- Example of nested vertical slides -->
@@ -416,13 +528,7 @@ Reveal.addEventListener( 'customevent', function() {
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
-			Reveal.addEventListener('slidechanged',(e) => {
-				
-				if(e.previousSlide.id === 's1')
-				{
-					
-				}
-			})
+			
 
 		</script>
 

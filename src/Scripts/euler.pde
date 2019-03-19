@@ -1,19 +1,22 @@
 float g = 6.67408*pow(10,-11);
 float s = 0.000000001;
 boolean lower = false;
-float ts = 0;
+float ts = 60*60*12;
 float[] faks = {7, 10};
 Vector o = new Vector(0,0,0);
 PlanetSystem sys;
-Hist h1;
+PlanetSystem[] h1;
 PlanetSystem sys2;
-Hist h2;
+PlanetSystem[] h2;
 MassPoint[] planets;
 float t = 0;
-int pSize = 600;
+int pSize = 500;
+int speed = 1;
 boolean running = false;
+int counter = 0;
 
 void setup(){
+  
   size(pSize,pSize);
   frameRate(60);
   planets = new MassPoint[3];
@@ -24,9 +27,11 @@ void setup(){
   //planets[1] = new MassPoint(new Vector(0,0,-1), new Vector(0,1,0), faks[0]*pow(10, faks[1]), 2);
   //planets[2] = new MassPoint(new Vector(0,10,0), new Vector(0,0,0.8), 0.1*faks[0]*pow(10, faks[1]), 2);
   sys = new PlanetSystem(planets, 0);
-  //h1 = new Hist(sys.mult(1));
-  sys2 = new PlanetSystem(planets, 1);
-  //h2 = new Hist(sys2.mult(1));
+  h1 = new PlanetSystem[1];
+  h1[0] = sys.mult(1);
+  sys2 = new PlanetSystem(planets, 0);
+  h2 = new PlanetSystem[1];
+  h2[0] = sys2.mult(1);
 }
 
 void keyPressed()
@@ -39,62 +44,70 @@ void keyPressed()
   {
     setup();
   }
+  if(key == 'w'|| key =='W')
+  {
+    if(speed > 1)
+    {
+      speed = speed/2;
+    }
+  }
+  if(key == 'e'|| key =='E')
+  {
+    speed = speed*2;
+  }
 }
 
 void draw(){
   if(running)
   {
-    for(int i = 0; i<1; i++)
+    translate(0.5, 0.5);
+    for(int i = 0; i<speed; i++)
     { //<>//
-      sys2.step(60*60*12);
-      sys.step(60*60*12);
+      sys.step(ts);
+      
+      for(int j = 0; j < 4; j++)
+      {
+        sys2.step(ts/4)
+      }
+      if(counter > 8)
+      {
+        h1 = append(h1, sys.mult(1));
+        h2 = append(h2, sys2.mult(1));
+        counter = 0; 
+      }
+      counter ++; 
     }
-    t += 60*60*24;
+    t += ts;
     //println(t/(60*60*24));
     background(0);
     Vector avg = sys.calcAvg();
+
+    
+
+    stroke(255,0,0);
+    drawPath(h1,avg.data[1], avg.data[2]);
+
+    stroke(0,119,255);
+    drawPath(h2,avg.data[1], avg.data[2]);
+
     stroke(255,0,0);
     fill(255,0,0);
     sys.show();
-    //h1.add(sys.mult(1));
-    //h1.draw(avg.data[1], avg.data[2]);
-    stroke(0,0,255);
-    fill(0,0,255);
+
+    stroke(0,119,255);
+    fill(0,119,255);
     sys2.show();
-    //h2.add(sys2.mult(1));
-    //h2.draw(avg.data[1], avg.data[2]);
   }
 }
 
-class Hist {
-  PlanetSystem p;
-  Hist next;
-  Hist(PlanetSystem p) {
-    this.p = p;
-    next = null;
-  }
-  
-  void add(PlanetSystem p) //<>//
+void drawPath(PlanetSystem[] path, double x, double y)
+{
+  for(int i = 1; i < path.length; i++)
   {
-    if(next == null) //<>//
-    {
-      next = new Hist(p);
-    } else {
-      next.add(p);
-    }
-  }
-  
-  void draw(double x, double y) //<>//
-  {
-    if(next != null) //<>//
-    {
-      for(int i = 0; i < p.bodys.length; i++)
-      {
-        Vector pos = p.bodys[i].pos;
-        Vector pos2 = next.p.bodys[i].pos;
-        line((float)(pos.data[1]-x)*s+(pSize/2),(float)(pos.data[2]-y)*s+(pSize/2),(float)(pos2.data[1]-x)*s+(pSize/2),(float)(pos2.data[2]-y)*s+(pSize/2));
-      }
-      next.draw(x,y);
+    for(int j = 0; j < path[i].bodys.length; j++){
+      Vector pos = path[i-1].bodys[j].pos;
+      Vector pos2 = path[i ].bodys[j].pos;
+      line((float)(pos.data[1]-x)*s+(pSize/2),(float)(pos.data[2]-y)*s+(pSize/2),(float)(pos2.data[1]-x)*s+(pSize/2),(float)(pos2.data[2]-y)*s+(pSize/2));
     }
   }
 }
