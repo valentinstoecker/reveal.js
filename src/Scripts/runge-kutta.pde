@@ -1,28 +1,28 @@
-float g = 6.67408*pow(10,-11);
-float s = 0.000000001;
+double gConst = 6.67408*pow(10,-11);
+double s = 0.000000001;
 boolean lower = false;
-float ts = 60*60*12;
-float[] faks = {7, 10};
+double ts = 60*60*12;
+double[] faks = {7, 10};
 Vector o = new Vector(0,0,0);
 PlanetSystem sys;
 PlanetSystem[] h1;
 PlanetSystem sys2;
 PlanetSystem[] h2;
 MassPoint[] planets;
-float t = 0;
+double t = 0;
 int pSize = 500;
 boolean running = false;
 int counter = 0;
 int speed = 1;
 
 void setup(){
-  
+  t = 0;
   size(pSize,pSize);
   frameRate(60);
   planets = new MassPoint[3];
-  planets[0] = new MassPoint(new Vector(0,0,384400000), new Vector(0,29780+1023,0), 7.349*pow(10,22), 0);
-  planets[1] = new MassPoint(o,new Vector(0,29780,0),5.9723*pow(10,24),1);
-  planets[2] = new MassPoint(new Vector(0,0,-149600000000.0), new Vector(0,0,0), 1.989*pow(10,30),2);
+  planets[0] = new MassPoint(new Vector(0,30000000000,-149600000000.0), new Vector(0,0,-33000), 1.989*pow(10,30), 0);
+  planets[1] = new MassPoint(o,new Vector(0,44000,0),5.9723*pow(10,24),1);
+  planets[2] = new MassPoint(new Vector(0,-30000000000,-149600000000.0), new Vector(0,0,33000), 1.989*pow(10,30),2);
   //planets[0] = new MassPoint(new Vector(0,0,1), new Vector(0,-1,0), faks[0]*pow(10, faks[1]), 1);
   //planets[1] = new MassPoint(new Vector(0,0,-1), new Vector(0,1,0), faks[0]*pow(10, faks[1]), 2);
   //planets[2] = new MassPoint(new Vector(0,10,0), new Vector(0,0,0.8), 0.1*faks[0]*pow(10, faks[1]), 2);
@@ -32,6 +32,7 @@ void setup(){
   sys2 = new PlanetSystem(planets, 1);
   h2 = new PlanetSystem[1];
   h2[0] = sys2.mult(1);
+  textSize(20);
 }
 
 void keyPressed()
@@ -65,19 +66,17 @@ void draw(){
     { //<>//
       sys.step(ts);
       
-      for(int j = 0; j < 4; j++)
-      {
-        sys2.step(ts/4)
-      }
-      if(counter > 8)
+      sys2.step(ts);
+      if(counter >= 8)
       {
         h1 = append(h1, sys.mult(1));
         h2 = append(h2, sys2.mult(1));
         counter = 0; 
       }
-      counter ++; 
+      counter ++;
+      t += ts; 
     }
-    t += ts;
+    
     //println(t/(60*60*24));
     background(0);
     Vector avg = sys.calcAvg();
@@ -90,13 +89,23 @@ void draw(){
     stroke(0,119,255);
     drawPath(h2,avg.data[1], avg.data[2]);
 
+    stroke(255);
+    fill(255);
+    rect(0, 0, 90, 35);
+    textAlign(RIGHT);
     stroke(255,0,0);
     fill(255,0,0);
     sys.show();
+    text(sys.getEnergyError()*100, 80, 15 );
 
     stroke(0,119,255);
     fill(0,119,255);
     sys2.show();
+    text(sys2.getEnergyError()*100, 80, 30);
+
+    stroke(255);
+    fill(255);
+    text(t/(60*60*24*365.25), 500, 15);
   }
 }
 
@@ -107,7 +116,7 @@ void drawPath(PlanetSystem[] path, double x, double y)
     for(int j = 0; j < path[i].bodys.length; j++){
       Vector pos = path[i-1].bodys[j].pos;
       Vector pos2 = path[i ].bodys[j].pos;
-      line((float)(pos.data[1]-x)*s+(pSize/2),(float)(pos.data[2]-y)*s+(pSize/2),(float)(pos2.data[1]-x)*s+(pSize/2),(float)(pos2.data[2]-y)*s+(pSize/2));
+      line((double)(pos.data[1]-x)*s+(pSize/2),(double)(pos.data[2]-y)*s+(pSize/2),(double)(pos2.data[1]-x)*s+(pSize/2),(double)(pos2.data[2]-y)*s+(pSize/2));
     }
   }
 }
@@ -116,6 +125,7 @@ class PlanetSystem {
   MassPoint[] bodys;
   int mode;
   boolean[] focus;
+  double initialEnergy;
   
   PlanetSystem(MassPoint[] ps, int m)
   {
@@ -127,9 +137,15 @@ class PlanetSystem {
       focus[i] = true;
     }
     mode = m;
+    initialEnergy = getEnergy();
+  }
+
+  double getEnergyError()
+  {
+    return abs((getEnergy()-initialEnergy)/initialEnergy);
   }
   
-  void step(float timestep)
+  void step(double timestep)
   {
     switch (mode) {
       case 1:
@@ -141,7 +157,7 @@ class PlanetSystem {
     }
   }
   
-  void rungeKutta(float timestep)
+  void rungeKutta(double timestep)
   {
     PlanetSystem c1 = this.g();
     PlanetSystem s1 = this.add(c1.mult(timestep/2));
@@ -155,7 +171,7 @@ class PlanetSystem {
      //<>//
   }
   
-  PlanetSystem mult(float timestep)
+  PlanetSystem mult(double timestep)
   {
     MassPoint[] mps = new MassPoint[this.bodys.length];
     for (int i = 0; i < this.bodys.length; i++)
@@ -168,7 +184,7 @@ class PlanetSystem {
   
   Vector calcAvg() {
     Vector avg = new Vector(0,0,0);
-    float massSum = 0;
+    double massSum = 0;
     for(int i = 0; i < bodys.length; i++)
     {
       MassPoint mp = bodys[i];
@@ -212,15 +228,32 @@ class PlanetSystem {
     
     return new PlanetSystem(newPS, mode);
   }
+
+  double getEnergy()
+  {
+    double energy = 0;
+    double mTotal = 0;
+    Vector comVelocity = new Vector(0,0,0);
+    for(int i = 0; i < bodys.length; i++)
+    {
+      energy += bodys[i].getEnergy(bodys);
+      mTotal += bodys[i].mass;
+      comVelocity = comVelocity.add(bodys[i].vel.mult(bodys[i].mass));
+    }
+    comVelocity = comVelocity.mult(1/mTotal);
+
+    energy += 0.5*mTotal*comVelocity.norm()*comVelocity.norm();
+    return energy;
+  }
 }
 
 class MassPoint {
   int id;
-  float mass;
+  double mass;
   Vector pos;
   Vector vel;
   
-  MassPoint(Vector pos, Vector vel, float mass, int id) {
+  MassPoint(Vector pos, Vector vel, double mass, int id) {
     this.id = id;
     this.pos = pos;
     this.mass = mass;
@@ -228,10 +261,10 @@ class MassPoint {
   }
   
   Vector getAcc(MassPoint mp){
-    return pos.sub(mp.pos).mult(-g*mp.mass/pow(pos.sub(mp.pos).norm(),3));
+    return pos.sub(mp.pos).mult(-gConst*mp.mass/pow(pos.sub(mp.pos).norm(),3));
   }
   
-  void show(float xo, float yo) {
+  void show(double xo, double yo) {
     //circle((pos.data[1]-xo)*s+(pSize/2),(pos.data[2]-yo)*s+(pSize/2),15);
     ellipse((pos.data[1]-xo)*s+(pSize/2), (pos.data[2]-yo)*s+(pSize/2), 15, 15);
     
@@ -249,13 +282,27 @@ class MassPoint {
     }
     return a;
   }
+
+  double getEnergy(MassPoint[] mps)
+  {
+    double e = 0;
+    for(MassPoint p : mps)
+    {
+      if(p.id != this.id)
+      {
+        e += -0.5*gConst*this.mass*p.mass*(1/this.pos.dist(p.pos));
+      }
+    }
+    e += 0.5*mass*vel.norm()*vel.norm();
+    return e;
+  }
   
   MassPoint add(MassPoint mp)
   {
     return new MassPoint(this.pos.add(mp.pos), this.vel.add(mp.vel) ,this.mass, this.id);
   }
   
-  MassPoint mult(float timestep)
+  MassPoint mult(double timestep)
   {
     return new MassPoint(this.pos.mult(timestep), this.vel.mult(timestep), this.mass, this.id);
   }
@@ -267,14 +314,14 @@ class MassPoint {
 }
 
 class Vector {
-  float[] data;
-  public Vector(float[] v)
+  double[] data;
+  public Vector(double[] v)
   {
     data = v;
   }
-  public Vector(float x, float y, float z)
+  public Vector(double x, double y, double z)
   {
-    data = new float[3];
+    data = new double[3];
     data[0] = x;
     data[1] = y;
     data[2] = z;
@@ -282,7 +329,7 @@ class Vector {
   
   Vector add(Vector v)
   {
-    float[] res = new float[data.length];
+    double[] res = new double[data.length];
     for(int i = 0; i < data.length; i++)
     {
       res[i] = data[i]+v.data[i];
@@ -290,9 +337,9 @@ class Vector {
     return new Vector(res);
   }
   
-  Vector mult(float k)
+  Vector mult(double k)
   {
-    float[] res = new float[this.data.length];
+    double[] res = new double[this.data.length];
     for(int i = 0; i< this.data.length; i++)
     {
       res[i] = this.data[i]*k;
@@ -305,9 +352,9 @@ class Vector {
     return this.add(v.mult(-1));
   }
   
-  float dot(Vector v)
+  double dot(Vector v)
   {
-    float res = 0;
+    double res = 0;
     for(int i = 0; i<data.length; i++)
     {
       res += data[i]*v.data[i];
@@ -315,12 +362,12 @@ class Vector {
     return res;
   }
   
-  float norm()
+  double norm()
   {
     return sqrt(this.dot(this));
   }
   
-  float dist(Vector v)
+  double dist(Vector v)
   {
     return this.sub(v).norm();
   }
@@ -333,7 +380,7 @@ class Vector {
   void prnt()
   {
     print("|\t");
-    for(float v : data)
+    for(double v : data)
     {
       print(v);
       print("|\t");

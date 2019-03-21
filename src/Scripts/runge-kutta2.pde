@@ -11,9 +11,9 @@ PlanetSystem[] h2;
 MassPoint[] planets;
 double t = 0;
 int pSize = 500;
-int speed = 1;
 boolean running = false;
 int counter = 0;
+int speed = 1;
 
 void setup(){
   t = 0;
@@ -26,10 +26,10 @@ void setup(){
   //planets[0] = new MassPoint(new Vector(0,0,1), new Vector(0,-1,0), faks[0]*pow(10, faks[1]), 1);
   //planets[1] = new MassPoint(new Vector(0,0,-1), new Vector(0,1,0), faks[0]*pow(10, faks[1]), 2);
   //planets[2] = new MassPoint(new Vector(0,10,0), new Vector(0,0,0.8), 0.1*faks[0]*pow(10, faks[1]), 2);
-  sys = new PlanetSystem(planets, 0);
+  sys = new PlanetSystem(planets, 1);
   h1 = new PlanetSystem[1];
   h1[0] = sys.mult(1);
-  sys2 = new PlanetSystem(planets, 0);
+  sys2 = new PlanetSystem(planets, 1);
   h2 = new PlanetSystem[1];
   h2[0] = sys2.mult(1);
   textSize(20);
@@ -66,12 +66,14 @@ void draw(){
     { //<>//
       sys.step(ts);
       
-      for(int j = 0; j < 4; j++)
+      if(counter % 4 == 0)
       {
-        sys2.step(ts/4)
+        sys2.step(ts*4);
       }
+
       if(counter >= 8)
       {
+        
         h1 = append(h1, sys.mult(1));
         h2 = append(h2, sys2.mult(1));
         counter = 0; 
@@ -231,7 +233,7 @@ class PlanetSystem {
     
     return new PlanetSystem(newPS, mode);
   }
-  
+
   double getEnergy()
   {
     double energy = 0;
