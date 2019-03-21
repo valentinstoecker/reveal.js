@@ -111,6 +111,7 @@ void draw(){
     stroke(255);
     fill(255);
     text(t/(60*60*24*365.25), 500, 15);
+    text(frameRate,500,30)
   }
 }
 

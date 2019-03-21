@@ -94,17 +94,17 @@ void draw(){
 
     stroke(255);
     fill(255);
-    rect(0, 0, 90, 35);
+    //rect(0, 0, 90, 35);
     textAlign(RIGHT);
     stroke(255,0,0);
     fill(255,0,0);
     sys.show();
-    text(sys.getEnergyError()*100, 80, 15 );
+    //text(sys.getEnergyError()*100, 80, 15 );
 
     stroke(0,119,255);
     fill(0,119,255);
     sys2.show();
-    text(sys2.getEnergyError()*100, 80, 30);
+    //text(sys2.getEnergyError()*100, 80, 30);
 
     stroke(255);
     fill(255);
