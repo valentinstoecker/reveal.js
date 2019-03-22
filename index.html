@@ -61,8 +61,7 @@
 						<ol><li class="fragment">Ansatz</li>
 							<li class="fragment">Euler-Verfahren</li>
 							<li class="fragment">Fehlerabschätzung</li>
-							<li class="fragment">Runge-Kutta-Verfahren</li>
-							<li class="fragment">weitere Verbesserungen</li></ol></small></li>
+							<li class="fragment">Runge-Kutta-Verfahren</li></ol></small></li>
 						<li class="fragment">Fazit<br/><small>
 						<ol><li class="fragment">Beantwortung der Themenfrage</li>
 							<li class="fragment">Forschungsergebnisse</li></ol></small></li>
@@ -81,6 +80,13 @@
 							<li class="fragment">nicht analytisch lösbar <br/> 
 							<div class="fragment"> &#8658 nur durch Beobachtung oder Simulation Erkenntnissgewinn</div></li>
 						</ul>
+						<aside class="notes">
+							lange suche nach Exoplaneten, einfache gehen (wir sind da)
+							50% Mehrfachsternensystemen ausschließen?
+							nicht analytisch lösbar!
+							simululieren oder Beobachten
+							was nicht gesehen, keine Ahnung
+						</aside>
 					</section>
 				</section>
 
@@ -199,6 +205,10 @@
 								</msub>
 							</math> nach Zeitschritt h berechnet</li>
 						</ul>
+						<aside class="notes">
+							dgls werden numerisch/diskret gelöst
+							Newton-Gravitation verändert
+						</aside>
 					</section>
 				</section>
 
@@ -236,7 +246,10 @@
 								</math>
 							</li>
 							<li class="fragment">analog für <math><msubsup><mi>v</mi><mi>i</mi><mrow><mi>t</mi><mo>+</mo><mi>h</mi></mrow></msubsup></math></li>
-						</ul> 
+						</ul>
+						<aside class="notes">
+							Taylor?
+						</aside>
 					</section>
 					<section>
 						<h2>Euler-Verfahren</h2>
@@ -262,11 +275,15 @@
 					<section>
 						<h2>Euler-Verfahren</h2>
 						<ul>
-							<li>relativ ungenau</li>
-							<li>nicht symmetrisch</li>
-							<li>einfach zu programmieren und zu berechnen</li>
-							<li>Konsistenz- und Konvergenzordnung von 1</li>
+							<li class="fragment">relativ ungenau</li>
+							<li class="fragment">nicht symmetrisch</li>
+							<li class="fragment">einfach zu programmieren und zu berechnen</li>
+							<li class="fragment">Konsistenzordnung von 1</li>
 						</ul>
+						<aside class="notes">
+							1 mal g pro schritt
+							konsistenzordnung -> 1/2 h -> 1/2 f
+						</aside>
 					</section>
 				</section>
 
@@ -319,11 +336,17 @@
 									</small>
 								</div>
 							</div>
+						<aside class="notes">
+							4*fb = fr
+						</aside>	
 					</section>
 				</section>
 				<section>
 					<section>
 						<h1>Runge-Kutta-Verfahren</h1>
+						<aside class="notes">
+							genauer RK4
+						</aside>
 					</section>
 					<section>
 						<h2>Runge-Kutta-Verfahren</h2>
@@ -387,6 +410,18 @@
 								</div>
 							</div>
 					</section>
+					<section>
+						<h2>Runge-Kutta-Verfahren</h2>
+						<ul>
+							<li class="fragment">sehr genau</li>
+							<li class="fragment">symmetrisch</li>
+							<li class="fragment">4 mal langsamer als Euler</li>
+							<li class="fragment">Konsistenzordnung von 4</li>
+						</ul>
+						<aside class="notes">
+							RK4 -> 1/2 h -> 1/16 f
+						</aside>
+					</section>
 				</section>
 				<section>
 					<section>
@@ -418,6 +453,9 @@
 							<li class="fragment">2 Arten von Orbits (Typ P und Typ S)</li>
 							<li class="fragment">50-60% haben stabile habitable Zonen</li>
 						</ul>
+						<aside class="notes">
+							1/3 von sonnenähnlichen hat planeten (meistens typ s), bei normal fast alle (Keplerteleskop)
+						</aside>
 					</section>
 					<section>
 						<h2>Forschungsergebnisse</h2>
@@ -481,7 +519,9 @@
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/search/search.js', async: true },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
-					{ src: 'plugin/notes/notes.js', async: true }
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'socket.io/socket.io.js', async: true },
+					{ src: 'plugin/notes-server/client.js', async: true }
 				]
 			});
 			
